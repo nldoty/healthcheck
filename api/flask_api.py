@@ -5,12 +5,15 @@ app = Flask(__name__)
 app.secret_key = 'yG*+24FNR.37gP,A'
 CORS(app, support_credentials=True)
 
-@app.route('/status, methods=['GET'])
+@app.route('/status', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_app_status():
     if request.method == 'GET':
         #getter for the data from the checker
         #make it JSON-y
         #return the body and stuff
-        
-        })
+        return jsonify({"status": "running"}), 200
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
