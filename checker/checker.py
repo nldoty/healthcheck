@@ -3,10 +3,12 @@ import threading
 interval = 15.0
 
 
-def site_status(url, timeout=1):
-    print('CHECKING SITE STATUS')
-    t = threading.Timer(interval, site_status, args=[url])
+def site_status(site, timeout=1):
+    site_name = site[0]
+    url = site[1]
+    t = threading.Timer(interval, site_status, args=[site])
     t.start()
+    print('Checking status of site {}...'.format(site_name))
     try:
         # Use HEAD request for efficiency, only downloads headers
         response = requests.head(url)

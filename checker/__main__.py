@@ -1,9 +1,16 @@
 import threading
 from checker.checker import site_status
 
-interval = 15.0
+sites = [
+    ('Earthdata Search', 'https://search.earthdata.nasa.gov'),
+    ('Earthdata Login', 'https://urs.earthdata.nasa.gov'),
+    ('Earthdata API', 'https://cmr.earthdata.nasa.gov/search/collections.json'),
+    ('NASA Earthdata', 'https://www.earthdata.nasa.gov')
+]
 
 print("Start program")
 
-t = threading.Timer(interval, site_status, args=('https://search.earthdata.nasa.gov',))
-t.start()
+for site in sites:
+   t = threading.Thread(target=site_status, args=[site])
+   t.start()
+
