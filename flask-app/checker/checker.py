@@ -1,24 +1,50 @@
 import requests
+import yaml
 import threading
-interval = 15.0
+from site_management.site import Site
+from datetime import datetime
+interval = 10.0
+
+
+def update_time(): 
+    current_time = datetime.now()
+    formatted_time = current_time.strftime("%H:%M:%S %Z")
+    return formatted_time
+
+
+def load_sites(sites): 
+    sites_dict = None
+    with open(sites, 'r') as file:
+        sites_dict = yaml.safe_load(file)
+
+    return sites_dict['sites']
+
+def build_list(sites_list):
+    sites_to_status = []
+    for item in sites_list:
+        site_name = item['name']
+        url = item['url']
+        expected_status = item['expected_status']
+        site = Site(site_name, url, expected_status)
+        sites_to_status.append(site)
+
+    return sites_to_status
 
 
 def site_status(site, timeout=1):
-    site_name = site[0]
-    url = site[1]
+
+    print(site)
+    url = site.url
+    expected_status = site.expected_status
+
     t = threading.Timer(interval, site_status, args=[site])
     t.start()
-    print('Checking status of site {}...'.format(site_name))
     try:
         # Use HEAD request for efficiency, only downloads headers
         response = requests.head(url)
-        # Check if status code is exactly 200
-        if response.status_code == 200:
-            print("Website Available (200 OK)")
-            return True
-        else:
-            print(f"Status code: {response.status_code}")
-            return False
+        
+        return response.status_code == expected_status
+    
     except requests.exceptions.ConnectionError:
         print("Connection Error (Invalid hostname or no internet)")
         return False

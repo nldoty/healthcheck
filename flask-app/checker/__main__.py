@@ -1,14 +1,10 @@
 import threading
-from checker.checker import site_status
+import site
+from checker.checker import site_status, load_sites, build_list
 
-sites = [
-    ('Earthdata Search', 'https://search.earthdata.nasa.gov'),
-    ('Earthdata Login', 'https://urs.earthdata.nasa.gov'),
-    ('Earthdata API', 'https://cmr.earthdata.nasa.gov/search/collections.json'),
-    ('NASA Earthdata', 'https://www.earthdata.nasa.gov')
-]
-
-print("Start program")
+print("__Main__ run")
+parsed_sites = load_sites("/Users/ndoty/dev/healthcheck/flask-app/checker/sites.yaml")
+sites = build_list(parsed_sites)
 
 for site in sites:
    t = threading.Thread(target=site_status, args=[site])
