@@ -1,51 +1,28 @@
-import React from "react";
-import "./StatusCard.css";
+import Card from 'react-bootstrap/Card';
+import Badge from 'react-bootstrap/Badge';
 
-const StatusCard = ({ name, status }) => {
-  const getStatusClass = () => {
-    switch (status) {
-      case "operational":
-        return "status-operational";
-      case "incident":
-        return "status-incident";
-      case "maintenance":
-        return "status-maintenance";
-      case "outage":
-        return "status-outage";
-      default:
-        return "status-unknown";
-    }
-  };
-
-  const getStatusText = () => {
-    switch (status) {
-      case "operational":
-        return "No issues";
-      case "incident":
-        return "Incident";
-      case "maintenance":
-        return "Maintenance";
-      case "outage":
-        return "Outage";
-      default:
-        return "Unknown";
-    }
-  };
-
+function StatusCard(props) {
   return (
-    <div className="status-card">
-      <div className="status-header">
-        <div className="status-text">
-          <h3 className="status-title">{name}</h3>
-          <span className={`status-label ${getStatusClass()}`}>
-            {getStatusText()}
-          </span>
+   <Card style={{ width: '25rem' }}>
+      <Card.Body>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-3 text-start">
+              <Badge bg="success">Operational</Badge>
+            </div>
+            <div className="col-md-9 text-start">
+              <Card.Title>{props.title}</Card.Title>
+            </div>
+            <div className="col-md-12 text-start">
+          <Card.Text>
+            {props.url}
+          </Card.Text>
         </div>
-
-        <span className={`status-indicator ${getStatusClass()}`} />
-      </div>
-    </div>
+          </div>
+        </div>
+      </Card.Body>
+    </Card>
   );
-};
+}
 
 export default StatusCard;
