@@ -1,0 +1,13 @@
+sites:
+  - name: Earthdata Search
+    url: https://search.earthdata.nasa.gov
+    expected_status: 200
+  - name: Earthdata Login
+    url: https://urs.earthdata.nasa.gov
+    expected_status: 200
+  - name: Earthdata API
+    url: https://cmr.earthdata.nasa.gov/search/collections.json
+    expected_status: 200
+  - name: NASA Earthdata
+    url: https://www.earthdata.nasa.gov
+    expected_status: 200
