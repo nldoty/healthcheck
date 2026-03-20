@@ -3,7 +3,10 @@ import yaml
 import threading
 from site_management.site import Site
 from datetime import datetime
-interval = 10.0
+
+interval = 60.0
+site_data = []
+last_checked_time = None
 
 
 def update_time(): 
@@ -15,35 +18,25 @@ def update_time():
 def load_sites(sites): 
     sites_dict = None
     with open(sites, 'r') as file:
-        sites_dict = yaml.safe_load(file)
+        sites_dict = yaml.safe_load(file) 
 
     return sites_dict['sites']
 
 def build_list(sites_list):
-    sites_to_status = []
     for item in sites_list:
         site_name = item['name']
         url = item['url']
         expected_status = item['expected_status']
         site = Site(site_name, url, expected_status)
-        sites_to_status.append(site)
-
-    return sites_to_status
+        site_data.append(site)
 
 
 def site_status(site, timeout=1):
-
-    print(site)
-    url = site.url
-    expected_status = site.expected_status
-
-    t = threading.Timer(interval, site_status, args=[site])
-    t.start()
     try:
         # Use HEAD request for efficiency, only downloads headers
-        response = requests.head(url)
-        
-        return response.status_code == expected_status
+        response = requests.head(site.url)
+
+        return response.status_code == site.expected_status
     
     except requests.exceptions.ConnectionError:
         print("Connection Error (Invalid hostname or no internet)")
@@ -54,3 +47,12 @@ def site_status(site, timeout=1):
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
         return False
+
+
+def update_sites():
+    last_checked_time = update_time()
+    for site in site_data:
+        site.current_status = site_status(site)
+    
+    t = threading.Timer(interval, site_status, args=[site])
+    t.start()
