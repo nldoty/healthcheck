@@ -11,13 +11,23 @@ CORS(app, support_credentials=True)
 @app.route('/status', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def get_app_status():
-    json_string = []
+    data = []
     if request.method == 'GET':
+        checked_sites = []
         for site in earthdata_list.site_list:
-            json_string.append(json.dumps(site.__dict__))
-            print(json_string)
+            obj = {
+                "name": site.name,
+                "url": site.url,
+                "status": site.current_status
+            }
+            checked_sites.append(obj)
+
+        data = {
+            "updated_time": earthdata_list.checked_time,
+            "site_data": checked_sites
+        }
     
-    return jsonify(json_string), 200
+    return jsonify(data), 200
 
 with app.app_context(): 
     earthdata_list = SiteList()
