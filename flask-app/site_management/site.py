@@ -1,9 +1,13 @@
+import requests
+
+interval = 10.0
+
 class Site: 
     def __init__(self, name, url, expected_status, current_status=None):
-        self.name = name
-        self.url = url
-        self.expected_status = expected_status
-        self.current_status = current_status
+        self._name = name
+        self._url = url
+        self._expected_status = expected_status
+        self._current_status = current_status
 
     @property
     def name(self):
@@ -43,3 +47,20 @@ class Site:
     def current_status(self, value):
         # This value CAN be empty, when status has not been set.
         self._current_status = value
+
+    def site_status(self):
+        try:
+            # Use HEAD request for efficiency, only downloads headers
+            response = requests.head(self._url)
+
+            return response.status_code == self._expected_status
+        
+        except requests.exceptions.ConnectionError:
+            print("Connection Error (Invalid hostname or no internet)")
+            return False
+        except requests.exceptions.Timeout:
+            print("Timeout Error")
+            return False
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+            return False
