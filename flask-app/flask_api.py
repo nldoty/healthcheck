@@ -1,8 +1,6 @@
 import json
-import logging
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS, cross_origin
-from checker import checker
 from site_management.siteList import SiteList
 
 app = Flask(__name__)

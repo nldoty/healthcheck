@@ -1,9 +1,10 @@
 import yaml
+import os
 from datetime import datetime
 from site_management.site import Site
-from checker.checker import site_status
 import threading
 
+yaml_loc = "site_management/sites.yaml"
 interval = 15.0
 
 class SiteList: 
@@ -11,7 +12,7 @@ class SiteList:
         current_time = datetime.now()
         self._checked_time = current_time.strftime("%H:%M:%S %Z")
 
-        parsed_sites = self._load_sites("./checker/sites.yaml")
+        parsed_sites = self._load_sites()
         self._site_list = self._build_list(parsed_sites)
 
     @property
@@ -32,9 +33,9 @@ class SiteList:
             raise ValueError("Site list cannot be empty.")
         self._site_list = site_list
         
-    def _load_sites(self, sites_yaml): 
+    def _load_sites(self): 
         sites_dict = None
-        with open(sites_yaml, 'r') as file:
+        with open(yaml_loc, 'r') as file:
             sites_dict = yaml.safe_load(file) 
 
         return sites_dict['sites']
@@ -54,7 +55,7 @@ class SiteList:
     def update_sites(self):
         self.update_time()
         for site in self._site_list:
-            site.current_status = site_status(site)
+            site.current_status = site.site_status()
         
         t = threading.Timer(interval, self.update_sites)
         t.start()

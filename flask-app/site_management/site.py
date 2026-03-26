@@ -1,7 +1,5 @@
 import requests
 
-interval = 10.0
-
 class Site: 
     def __init__(self, name, url, expected_status, current_status=None):
         self._name = name
@@ -53,6 +51,7 @@ class Site:
             # Use HEAD request for efficiency, only downloads headers
             response = requests.head(self._url)
 
+            print("Expected status: " + str(self._expected_status))
             return response.status_code == self._expected_status
         
         except requests.exceptions.ConnectionError:
